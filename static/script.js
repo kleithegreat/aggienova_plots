@@ -58,6 +58,26 @@ $(document).ready(function() {
         });
     });
 
+    $.getJSON('/all_types', function(data) {
+        data.forEach(function(type) {
+            $('#type-dropdown').append('<option value="' + type + '">' + type + '</option>');
+        });
+    });
+
+    $('#add-by-type').click(function() {
+        var type = $('#type-dropdown').val();
+        if (!type) return;
+        $.getJSON('/get_supernovae_by_type/' + type, function(data) {
+            data.forEach(function(supernova) {
+                // Code to add each supernova to the plot (reuse the existing function/logic)
+                $('#supernova-dropdown').val(supernova);
+                $('#add-supernova').click();
+            });
+        }).fail(function() {
+            alert('Failed to load supernovae data for the selected type.');
+        });
+    }); 
+
     $selectedSupernovae.on('click', '.remove-supernova', function() {
         var supernova = $(this).parent().text().replace(' Remove', '');
         delete selectedSupernovae[supernova];

@@ -64,6 +64,28 @@ def get_filters(supernova):
         abort(500, description="Internal Server Error")
 
 
+@app.route('/all_types', methods=['GET'])
+def all_types():
+    try:
+        unique_types = distance_df['type'].dropna().unique().tolist()
+        return jsonify(unique_types)
+    except Exception as e:
+        print(e)  # Logging the error for better debugging
+        abort(500, description="Internal Server Error")
+
+
+@app.route('/get_supernovae_by_type/<type>', methods=['GET'])
+def get_supernovae_by_type(type):
+    try:
+        supernovae_of_type = distance_df[distance_df['type'] == type]['SNname'].tolist()
+        available_files = [file.split('_')[0] for file in os.listdir(data_directory) if file.endswith('.dat')]
+        supernovae_with_data = [sn for sn in supernovae_of_type if sn in available_files]
+        return jsonify(supernovae_with_data)
+    except Exception as e:
+        print(e)  # Logging the error for better debugging
+        abort(500, description="Internal Server Error")
+
+
 @app.route('/plot', methods=['POST'])
 def plot():
     try:
