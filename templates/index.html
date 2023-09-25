@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supernovae Light Curves</title>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</head>
+<body>
+    <h1>Supernovae Light Curves</h1>
+    <div id="supernovae-selection">
+        <input type="text" id="supernova-search" placeholder="Search for supernova">
+        <select id="supernova-dropdown">
+            <option value="" selected="selected">Select a Supernova</option>
+        </select>
+        <button id="add-supernova">Add Supernova</button>
+        <button id="toggle-xaxis">Toggle X-Axis</button>
+    </div>
+    <div id="selected-supernovae"></div>
+    <div id="plot-div"></div>
+</body>
+</html>
