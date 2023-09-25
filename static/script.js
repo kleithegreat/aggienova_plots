@@ -126,6 +126,18 @@ $(document).ready(function() {
         updatePlot();
     });
 
+    $('#remove-all').click(function() {
+        // Clear the selected and highlighted supernovae lists
+        selectedSupernovae = {};
+        highlightedSupernovae = [];
+        
+        // Clear the list of selected supernovae from the UI
+        $('#selected-supernovae').empty();
+        
+        // Update the plot (which should now be empty)
+        updatePlot();
+    });    
+
     function updatePlot() {
         $.ajax({
             url: '/plot',

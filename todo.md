@@ -1,7 +1,4 @@
 ## short term:
-- feature to plot all supernovae of a certain type
-    - types are listed in csv not dat
-
 - matching up colors (subtracting magnituides of different filters)
     - selecting which filters to compare
     - some epochs might be missing certain filters - plot only available data
