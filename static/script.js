@@ -1,7 +1,6 @@
-//console.log("script loaded")
-
 $(document).ready(function() {
     var selectedSupernovae = {};
+    var highlightedSupernovae = [];
     var $supernovaDropdown = $('#supernova-dropdown');
     var $supernovaSearch = $('#supernova-search');
     var $selectedSupernovae = $('#selected-supernovae');
@@ -39,6 +38,7 @@ $(document).ready(function() {
             }
             var $supernovaDiv = $('<div id="' + supernova + '">');
             $supernovaDiv.append('<h2>' + supernova + ' <button class="remove-supernova">Remove</button></h2>');
+            $supernovaDiv.append('<input type="checkbox" class="highlight-supernova" value="' + supernova + '"> Highlight</input><br>');
             data.forEach(function(filter) {
                 var inputElem = $('<input>', {
                     type: 'checkbox',
@@ -64,15 +64,30 @@ $(document).ready(function() {
         updatePlot();
     });
 
-    $selectedSupernovae.on('change', 'input[type=checkbox]', function() {
-        var supernova = $(this).parent().attr('id');
-        var filter = $(this).attr('name');
-        if (this.checked) {
-            selectedSupernovae[supernova].push(filter);
+    $selectedSupernovae.on('change', '.highlight-supernova', function() {
+        var supernova = $(this).val();
+        if (this.checked && highlightedSupernovae.indexOf(supernova) == -1) {
+            highlightedSupernovae.push(supernova);
         } else {
-            var index = selectedSupernovae[supernova].indexOf(filter);
+            var index = highlightedSupernovae.indexOf(supernova);
             if (index > -1) {
-                selectedSupernovae[supernova].splice(index, 1);
+                highlightedSupernovae.splice(index, 1);
+            }
+        }
+        updatePlot();
+    });
+
+    $selectedSupernovae.on('change', 'input[type=checkbox]', function() {
+        if (!$(this).hasClass('highlight-supernova')) {
+            var supernova = $(this).parent().attr('id');
+            var filter = $(this).attr('name');
+            if (this.checked) {
+                selectedSupernovae[supernova].push(filter);
+            } else {
+                var index = selectedSupernovae[supernova].indexOf(filter);
+                if (index > -1) {
+                    selectedSupernovae[supernova].splice(index, 1);
+                }
             }
         }
         updatePlot();
@@ -89,7 +104,8 @@ $(document).ready(function() {
             type: 'POST',
             data: JSON.stringify({
                 selectedSupernovae: selectedSupernovae,
-                xAxisType: xAxisType // Send the current x-axis type to the server
+                xAxisType: xAxisType,
+                highlightedSupernovae: highlightedSupernovae
             }),
             contentType: 'application/json;charset=UTF-8',
             success: function(data) {

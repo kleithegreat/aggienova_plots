@@ -1,13 +1,12 @@
 ## short term:
-- feature to plot all supernovae of a certain type
-    - types are listed in csv not dat
-- feature to make a certain supernova distinct from others: highlight/bold
-
 - magnitude normalization
     - # **distance modulus**
         - absolute magnitude = apparant magnitude - modulus
         - $\mu = m - M$
         - modulus in distance_best column in csv file
+
+- feature to plot all supernovae of a certain type
+    - types are listed in csv not dat
 
 - matching up colors (subtracting magnituides of different filters)
     - selecting which filters to compare
