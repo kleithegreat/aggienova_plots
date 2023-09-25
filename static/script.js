@@ -5,7 +5,8 @@ $(document).ready(function() {
     var $supernovaSearch = $('#supernova-search');
     var $selectedSupernovae = $('#selected-supernovae');
     var $plotDiv = $('#plot-div');
-    var xAxisType = 'DaysSince'; 
+    var xAxisType = 'DaysSince';
+    var yAxisType = 'Apparent'; // Added variable to track y-axis type
 
     // Fetch all supernovae names for the dropdown
     $.getJSON('/all_supernovae', function(data) {
@@ -95,6 +96,13 @@ $(document).ready(function() {
 
     $('#toggle-xaxis').click(function() {
         xAxisType = (xAxisType === 'MJD') ? 'DaysSince' : 'MJD'; // Toggle between MJD and DaysSince
+        $(this).text("Toggle Y-Axis (" + xAxisType + ")");
+        updatePlot();
+    });
+
+    $('#toggle-yaxis').click(function() {
+        yAxisType = (yAxisType === 'Apparent') ? 'Absolute' : 'Apparent';
+        $(this).text("Toggle Y-Axis (" + yAxisType + ")");
         updatePlot();
     });
 
@@ -105,14 +113,15 @@ $(document).ready(function() {
             data: JSON.stringify({
                 selectedSupernovae: selectedSupernovae,
                 xAxisType: xAxisType,
+                yAxisType: yAxisType, // Added y-axis type to the request payload
                 highlightedSupernovae: highlightedSupernovae
             }),
             contentType: 'application/json;charset=UTF-8',
             success: function(data) {
                 $plotDiv.html(data);
             },
-            error: function() {
-                alert('Failed to update plot.');
+            error: function(jqXHR) { // Modified error handling to display specific error messages
+                alert(jqXHR.responseText || 'Failed to update plot.');
             }
         });
     }

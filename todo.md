@@ -1,10 +1,4 @@
 ## short term:
-- magnitude normalization
-    - # **distance modulus**
-        - absolute magnitude = apparant magnitude - modulus
-        - $\mu = m - M$
-        - modulus in distance_best column in csv file
-
 - feature to plot all supernovae of a certain type
     - types are listed in csv not dat
 
