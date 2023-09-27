@@ -1,1 +1,9 @@
-attached is a repository for plotting supernova data. app.py is a flask app that lets a user plot multiple supernovae on one graph and toggle on and off certain filters for each supernova. /data/ is a directory containing .dat files which are basically csv files that contain all the light curve data for a given supernova. NewSwiftSNweblist.csv contains more information about the supernovae.
+the following is a flask web app for plotting supernova data. currently it has the following features:
+- lets the user select supernovae to plot by search or dropdown
+- lets the user select which light filters to plot for each supernoave
+- lets the user plot all supernovae of a certain type
+- lets the user toggle the x axis between modified julian date and days since first observation
+- lets the user toggle the y axis between apparant and absolute magnitude
+- lets the user remove all plotted supernovae with a single button
+
+app.py contains the backend logic, script.js contains the frontend logic, and index.html is the website skeleton. the code works in a repository where /data/ is a directory containing .dat files which are basically csv files that contain all the light curve data for a given supernova. the repository root also contains a csv called NewSwiftSNweblist.csv, which contains more information about the supernovae such as their type.
