@@ -9,9 +9,6 @@ This is a project done for Dr. Peter Brown's Aggienova project at Texas A&M Univ
 - Plot all supernovae of a certain type
 - Toggle the x-axis between modified Julian date and days since first observation
 - Toggle the y-axis between apparent and absolute magnitude
-- Remove all plotted supernovae with a single button
-- Automatically refreshes the plot when the user makes a change
-Structure
 
 The repository is structured as follows:
 
@@ -19,7 +16,7 @@ The repository is structured as follows:
 - script.js: Contains the frontend logic
 - index.html: The website skeleton
 - /data/: A directory containing .dat files which are essentially CSV files that contain all the light curve data for a given supernova
-- NewSwiftSNweblist.csv: A CSV file located in the repository root, which contains more information about the supernovae such as their type
+- NewSwiftSNweblist.csv: A CSV containing more information about the supernovae such as their type
 
 **Data Files**
 
