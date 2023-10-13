@@ -7,6 +7,44 @@ $(document).ready(function() {
     var $plotDiv = $('#plot-div');
     var xAxisType = 'DaysSince';
     var yAxisType = 'Apparent'; // Added variable to track y-axis type
+    var $colorPlotDiv = $('#color-plot-div');
+    var selectedBands = {band1: null, band2: null}; // For storing selected bands for color calculation
+
+    // Populate band dropdowns
+    var availableBands = ['U', 'B', 'V', 'UVW1', 'UVM2', 'UVW2'];
+    availableBands.forEach(function(band) {
+        $('#band1-dropdown, #band2-dropdown').append('<option value="' + band + '">' + band + '</option>');
+    });
+
+    function updateColorPlot() {
+        $.ajax({
+            url: '/plot_colors',
+            type: 'POST',
+            data: JSON.stringify({
+                selectedSupernovae: selectedSupernovae,
+                band1: selectedBands.band1,
+                band2: selectedBands.band2
+            }),
+            contentType: 'application/json;charset=UTF-8',
+            success: function(data) {
+                $colorPlotDiv.html(data);
+            },
+            error: function(jqXHR) {
+                alert(jqXHR.responseText || 'Failed to update color plot.');
+            }
+        });
+    }
+
+    $('#band1-dropdown, #band2-dropdown').change(function() {
+        // Update selected bands from the dropdowns
+        selectedBands.band1 = $('#band1-dropdown').val();
+        selectedBands.band2 = $('#band2-dropdown').val();
+
+        if (selectedBands.band1 && selectedBands.band2) {
+            // Only proceed if both bands are selected
+            updateColorPlot();
+        }
+    });
 
     // Fetch all supernovae names for the dropdown
     $.getJSON('/all_supernovae', function(data) {
