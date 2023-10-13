@@ -30,3 +30,14 @@ def read_dat_file(file_path):
     data.columns = lines[header_line].replace("# ", "").split()
 
     return data
+
+TOLERANCE = 1.0
+
+def closest_date(base_date, date_series, tolerance=TOLERANCE):
+    """Find the closest date in date_series to base_date, within the given tolerance."""
+    time_diffs = abs(date_series - base_date)
+    min_diff = time_diffs.min()
+    if min_diff <= tolerance:
+        return date_series[time_diffs == min_diff].iloc[0]
+    else:
+        return None

@@ -1,6 +1,6 @@
 from flask import Blueprint, request, make_response, abort
+from utils import get_data_path, read_dat_file, distance_df, closest_date
 import pandas as pd
-from utils import get_data_path, read_dat_file, data_directory, distance_df
 import plotly.graph_objects as go
 
 post_routes = Blueprint('post_routes', __name__)
@@ -65,7 +65,7 @@ def plot():
         abort(500, description="Internal Server Error")
 
 
-@post_routes.route('/plot', methods=['POST'])
+@post_routes.route('/plot_colors', methods=['POST'])
 def plot_colors():
     try:
         data = request.get_json()
@@ -92,16 +92,22 @@ def plot_colors():
             else:
                 missing_modulus_sns.append(supernova)
 
-            band1_data = data[data['Filter'] == band1]
+            band1_data = data[data['Filter'] == band1].copy()
             band2_data = data[data['Filter'] == band2]
-
-            # Compute color by subtracting magnitudes of the bands
-            merged_data = pd.merge(band1_data, band2_data, on='Date', suffixes=('_band1', '_band2'))
-            merged_data['Color'] = merged_data['Magnitude_band1'] - merged_data['Magnitude_band2']
-
+            
+            # Compute color using a tolerance-based approach
+            colors = []
+            dates = []
+            for date in band1_data['Date']:
+                closest_band2_date = closest_date(date, band2_data['Date'])
+                if closest_band2_date is not None:
+                    color = band1_data[band1_data['Date'] == date]['Magnitude'].iloc[0] - band2_data[band2_data['Date'] == closest_band2_date]['Magnitude'].iloc[0]
+                    colors.append(color)
+                    dates.append(date)
+            
             fig.add_trace(go.Scatter(
-                x=merged_data['Date'],
-                y=merged_data['Color'],
+                x=dates,
+                y=colors,
                 mode='lines+markers',
                 name=f"{supernova} ({band1} - {band2})"
             ))
@@ -119,4 +125,3 @@ def plot_colors():
     except Exception as e:
         print(e)  # Logging the error for better debugging
         abort(500, description="Internal Server Error")
-

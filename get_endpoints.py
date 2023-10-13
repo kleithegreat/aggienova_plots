@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, abort, render_template
-import os
 from utils import data_directory, distance_df, get_data_path, read_dat_file
+import os
 
 get_routes = Blueprint('get_routes', __name__)
 
