@@ -121,6 +121,7 @@ $(document).ready(function() {
         delete selectedSupernovae[supernova];
         $(this).parent().parent().remove();
         updatePlot();
+        updateColorPlot();
     });
 
     $selectedSupernovae.on('change', '.highlight-supernova', function() {
@@ -134,6 +135,7 @@ $(document).ready(function() {
             }
         }
         updatePlot();
+        updateColorPlot();
     });
 
     $selectedSupernovae.on('change', 'input[type=checkbox]', function() {
@@ -150,18 +152,21 @@ $(document).ready(function() {
             }
         }
         updatePlot();
+        updateColorPlot();
     });
 
     $('#toggle-xaxis').click(function() {
         xAxisType = (xAxisType === 'MJD') ? 'DaysSince' : 'MJD'; // Toggle between MJD and DaysSince
         $(this).text("Toggle Y-Axis (" + xAxisType + ")");
         updatePlot();
+        updateColorPlot();
     });
 
     $('#toggle-yaxis').click(function() {
         yAxisType = (yAxisType === 'Apparent') ? 'Absolute' : 'Apparent';
         $(this).text("Toggle Y-Axis (" + yAxisType + ")");
         updatePlot();
+        updateColorPlot();
     });
 
     $('#remove-all').click(function() {
@@ -174,6 +179,7 @@ $(document).ready(function() {
         
         // Update the plot (which should now be empty)
         updatePlot();
+        updateColorPlot();
     });    
 
     function updatePlot() {
