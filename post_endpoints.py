@@ -1,5 +1,5 @@
 from flask import Blueprint, request, make_response, abort
-from utils import get_data_path, read_dat_file, distance_df, closest_date
+from utils import read_supernova_data, distance_df, closest_date
 import pandas as pd
 import plotly.graph_objects as go
 
@@ -9,60 +9,71 @@ post_routes = Blueprint('post_routes', __name__)
 @post_routes.route('/plot', methods=['POST'])
 def plot():
     try:
-        data = request.get_json()
-        selected_supernovae = data.get('selectedSupernovae', {})
-        highlighted_supernovae = data.get('highlightedSupernovae', [])
-        x_axis_type = data.get('xAxisType', 'MJD')
-        y_axis_type = data.get('yAxisType', 'Apparent')
+        request_data = request.get_json()
+        
+        selected_supernovae = request_data["selectedSupernovae"]
+        highlighted_supernovae = request_data["highlightedSupernovae"]
+        x_axis_type = request_data["xAxisType"]
+        y_axis_type = request_data["yAxisType"]
 
         missing_modulus_sns = []
 
         fig = go.Figure()
+
+        # iterate over each supernova and its list of filters in selected_supernovae
         for supernova, filters in selected_supernovae.items():
-            data_path = get_data_path(supernova)
-            data = read_dat_file(data_path)
-            data.columns = ['Filter', 'Date', 'Magnitude', 'MagnitudeError'] + ['Extra_' + str(i) for i in range(data.shape[1] - 4)]
-            if x_axis_type == 'DaysSince':
-                min_date = data['Date'].min()
-                data['Date'] = data['Date'] - min_date
+            sn_data = read_supernova_data(supernova)
+            sn_data = sn_data[["Filter", "MJD[days]", "Mag", "MagErr"]]
+            sn_data.columns = ["filter", "date", "magnitude", "magnitude_error"]
+
+            # adjust dates if necessary
+            if x_axis_type == "DaysSince":
+                min_date = sn_data['date'].min()
+                sn_data['date'] = sn_data['date'] - min_date
             
-            # Adjusting magnitude for absolute magnitude if requested
+            # adjust magnitude if necessary TODO: not working???
             if y_axis_type == 'Absolute':
                 modulus = distance_df[distance_df['SNname'].str.lower() == supernova.lower()]['Distance_best'].values
                 if modulus.size > 0 and not pd.isna(modulus[0]):
-                    data['Magnitude'] = data['Magnitude'] - modulus[0]
+                    sn_data['magnitude'] = sn_data['magnitude'] - modulus[0]
                 else:
                     missing_modulus_sns.append(supernova)
             
+            # plot each filter for the supernova
             for filter_type in filters:
-                filter_data = data[data['Filter'] == filter_type]
+                filter_data = sn_data[sn_data["filter"] == filter_type]
                 line_width = 3 if supernova in highlighted_supernovae else 1
+
                 fig.add_trace(go.Scatter(
-                    x=filter_data['Date'],
-                    y=filter_data['Magnitude'],
+                    x=filter_data["date"],
+                    y=filter_data["magnitude"],
                     mode='lines+markers',
                     name=f"{supernova} - {filter_type}",
                     line=dict(width=line_width),
                     error_y=dict(
                         type='data',
-                        array=filter_data['MagnitudeError'],
+                        array=filter_data["magnitude_error"],
                         visible=True
                     )
                 ))
 
         fig.update_yaxes(autorange="reversed")
-        fig.update_xaxes(title_text=x_axis_type)
+
+        x_title = "Days Since First Observation" if x_axis_type == "DaysSince" else "Modified Julian Date"
+        y_title = "Absolute Magnitude" if y_axis_type == "Absolute" else "Apparent Magnitude"
+        fig.update_xaxes(title_text=x_title)
+        fig.update_yaxes(title_text=y_title)
+
         fig.update_layout(title="Supernovae Light Curves", margin={"r": 0, "t": 40, "l": 0, "b": 0})
         
-        # Return error if distance modulus is missing for any supernova
+        # return error if distance modulus is missing for any supernova
         if missing_modulus_sns:
             error_msg = "No distance modulus data for: " + ", ".join(missing_modulus_sns)
             return make_response(error_msg, 400)
         
         return fig.to_html(full_html=False)
     except Exception as e:
-        print(e)  # Logging the error for better debugging
-        abort(500, description="Internal Server Error")
+        abort(500, description="/plot endpoint failed with error: " + str(e))
 
 
 @post_routes.route('/plot_colors', methods=['POST'])
@@ -77,8 +88,7 @@ def plot_colors():
 
         fig = go.Figure()
         for supernova in selected_supernovae:
-            data_path = get_data_path(supernova)
-            data = read_dat_file(data_path)
+            data = read_supernova_data(supernova)
             data.columns = ['Filter', 'Date', 'Magnitude', 'MagnitudeError'] + ['Extra_' + str(i) for i in range(data.shape[1] - 4)]
             
             # Adjust for days since observation

@@ -1,5 +1,5 @@
-from flask import Blueprint, jsonify, abort, render_template
-from utils import data_directory, distance_df, get_data_path, read_dat_file
+from flask import Blueprint, jsonify, abort
+from utils import data_directory, distance_df, read_supernova_data
 import os
 
 get_routes = Blueprint('get_routes', __name__)
@@ -17,8 +17,7 @@ def all_supernovae():
 @get_routes.route('/get_filters/<supernova>', methods=['GET'])
 def get_filters(supernova):
     try:
-        data_path = get_data_path(supernova)
-        data = read_dat_file(data_path)
+        data = read_supernova_data(supernova)
         available_filters = data["Filter"].unique().tolist()
         return jsonify(available_filters)
     except Exception as e:

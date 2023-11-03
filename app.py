@@ -9,10 +9,12 @@ app = Flask(__name__)
 app.register_blueprint(get_routes)
 app.register_blueprint(post_routes)
 
+
 @app.route('/')
 def index():
     supernovae = [file.split('_')[0] for file in os.listdir(data_directory) if file.endswith('.dat')]
     return render_template('index.html', supernovae=supernovae)
+
 
 if __name__ == "__main__":
     app.run(debug=True)

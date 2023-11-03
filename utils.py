@@ -1,21 +1,24 @@
 import os
 import pandas as pd
 
-# Directory where the data files are located
-data_directory = "./data"
 
-# Load the CSV with distance modulus data
 current_directory = os.path.dirname(os.path.abspath(__file__))
+data_directory = os.path.join(current_directory, 'data')
 distance_csv_path = os.path.join(current_directory, 'NewSwiftSNweblist.csv')
+
 distance_df = pd.read_csv(distance_csv_path)
 
-
-def get_data_path(supernova):
-    return os.path.join(data_directory, f"{supernova}_uvotB15.1.dat")
+TOLERANCE = 1.0  # for plotting colors
 
 
-def read_dat_file(file_path):
-    # Skip the comment lines at the beginning to find the header
+def read_supernova_data(supernova: str) -> pd.DataFrame:
+    """Return a DataFrame from the .dat file for the given supernova."""
+    data_directory = "./data"
+
+    # Get the path to the .dat file
+    file_path = os.path.join(data_directory, f"{supernova}_uvotB15.1.dat")
+
+    # Read the .dat file
     with open(file_path, 'r') as file:
         lines = file.readlines()
         for idx, line in enumerate(lines):
@@ -31,9 +34,9 @@ def read_dat_file(file_path):
 
     return data
 
-TOLERANCE = 1.0
 
-def closest_date(base_date, date_series, tolerance=TOLERANCE):
+
+def closest_date(base_date: pd.Timestamp, date_series: pd.Series, tolerance=TOLERANCE) -> pd.Timestamp:
     """Find the closest date in date_series to base_date, within the given tolerance."""
     time_diffs = abs(date_series - base_date)
     min_diff = time_diffs.min()

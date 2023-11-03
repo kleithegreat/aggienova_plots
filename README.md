@@ -1,6 +1,6 @@
 # Aggienova Plots
 
-This is a project done for Dr. Peter Brown's Aggienova project at Texas A&M University. This repository contains a Flask web application for plotting supernova data. The application allows users to select and plot data for different supernovae, with various customization options.
+This is a project done for Dr. Peter Brown's Aggienova project at Texas A&M University. This repository contains a Flask web application for plotting supernova data.
 
 **Features**
 
