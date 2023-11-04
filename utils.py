@@ -12,13 +12,20 @@ TOLERANCE = 1.0  # for plotting colors
 
 
 def read_supernova_data(supernova: str) -> pd.DataFrame:
-    """Return a DataFrame from the .dat file for the given supernova."""
-    data_directory = "./data"
+    """Read the data for the given supernova from the data directory.
 
-    # Get the path to the .dat file
+    Args:
+        supernova (str): Name of the supernova.
+
+    Raises:
+        ValueError: If the header line is not found in the .dat file.
+
+    Returns:
+        pd.DataFrame: Data for the given supernova.
+    """
     file_path = os.path.join(data_directory, f"{supernova}_uvotB15.1.dat")
 
-    # Read the .dat file
+    # find start of actual data
     with open(file_path, 'r') as file:
         lines = file.readlines()
         for idx, line in enumerate(lines):
@@ -28,19 +35,29 @@ def read_supernova_data(supernova: str) -> pd.DataFrame:
         else:
             raise ValueError("Header line not found in .dat file.")
 
-    # Read the actual data using the identified header line
     data = pd.read_csv(file_path, skiprows=header_line + 1, sep=r'\s+', comment='#', engine='python', header=None)
     data.columns = lines[header_line].replace("# ", "").split()
 
     return data
 
 
-
 def closest_date(base_date: pd.Timestamp, date_series: pd.Series, tolerance=TOLERANCE) -> pd.Timestamp:
-    """Find the closest date in date_series to base_date, within the given tolerance."""
+    """Return the closest date in the given series to the given base date.
+
+    Args:
+        base_date (pd.Timestamp): Base date to compare to.
+        date_series (pd.Series): Series of dates to compare to.
+        tolerance (_type_, optional): Maximum difference between dates to be considered "close". Defaults to TOLERANCE.
+
+    Raises:
+        ValueError: If no date within tolerance is found.
+
+    Returns:
+        pd.Timestamp: Closest date in the given series to the given base date.
+    """
     time_diffs = abs(date_series - base_date)
     min_diff = time_diffs.min()
     if min_diff <= tolerance:
         return date_series[time_diffs == min_diff].iloc[0]
     else:
-        return None
+        raise ValueError("No date within tolerance found.")

@@ -8,6 +8,11 @@ post_routes = Blueprint('post_routes', __name__)
 
 @post_routes.route('/plot', methods=['POST'])
 def plot():
+    """Plots the light curves for the selected supernovae and filters.
+
+    Returns:
+        str: HTML string of the plotly figure
+    """
     try:
         request_data = request.get_json()
         
@@ -31,7 +36,7 @@ def plot():
                 min_date = sn_data['date'].min()
                 sn_data['date'] = sn_data['date'] - min_date
             
-            # adjust magnitude if necessary TODO: not working???
+            # adjust magnitude if necessary
             if y_axis_type == 'Absolute':
                 modulus = distance_df[distance_df['SNname'].str.lower() == supernova.lower()]['Distance_best'].values
                 if modulus.size > 0 and not pd.isna(modulus[0]):
@@ -72,48 +77,59 @@ def plot():
             return make_response(error_msg, 400)
         
         return fig.to_html(full_html=False)
+    
     except Exception as e:
         abort(500, description="/plot endpoint failed with error: " + str(e))
 
 
 @post_routes.route('/plot_colors', methods=['POST'])
 def plot_colors():
+    """Plots the color curves for the selected supernovae and filters.
+
+    Returns:
+        str: HTML string of the plotly figure
+    """
     try:
-        data = request.get_json()
-        selected_supernovae = data.get('selectedSupernovae', {})
-        band1 = data.get('band1')
-        band2 = data.get('band2')
+        request_data = request.get_json()
+
+        selected_supernovae = request_data["selectedSupernovae"]
+        band1 = request_data["band1"]
+        band2 = request_data["band2"]
 
         missing_modulus_sns = []
 
         fig = go.Figure()
+
         for supernova in selected_supernovae:
-            data = read_supernova_data(supernova)
-            data.columns = ['Filter', 'Date', 'Magnitude', 'MagnitudeError'] + ['Extra_' + str(i) for i in range(data.shape[1] - 4)]
+            sn_data = read_supernova_data(supernova)
+            sn_data = sn_data[["Filter", "MJD[days]", "Mag", "MagErr"]]
+            sn_data.columns = ["filter", "date", "magnitude", "magnitude_error"]
             
-            # Adjust for days since observation
-            min_date = data['Date'].min()
-            data['Date'] = data['Date'] - min_date
+            # adjust for days since first observation
+            min_date = sn_data["date"].min()
+            sn_data["date"] = sn_data["date"] - min_date
             
-            # Adjusting magnitude for absolute magnitude
-            modulus = distance_df[distance_df['SNname'].str.lower() == supernova.lower()]['Distance_best'].values
+            # adjust magnitude for absolute magnitude
+            modulus = distance_df[distance_df['SNname'].str.lower() == supernova.lower()]['Distance_best'].values  # TODO MAKE SURE THIS WORKS
             if modulus.size > 0 and not pd.isna(modulus[0]):
-                data['Magnitude'] = data['Magnitude'] - modulus[0]
+                sn_data['magnitude'] = sn_data['magnitude'] - modulus[0]
             else:
                 missing_modulus_sns.append(supernova)
 
-            band1_data = data[data['Filter'] == band1].copy()
-            band2_data = data[data['Filter'] == band2]
+            band1_data = sn_data[sn_data['filter'] == band1].copy()
+            band2_data = sn_data[sn_data['filter'] == band2]
             
             # Compute color using a tolerance-based approach
             colors = []
             dates = []
-            for date in band1_data['Date']:
-                closest_band2_date = closest_date(date, band2_data['Date'])
-                if closest_band2_date is not None:
-                    color = band1_data[band1_data['Date'] == date]['Magnitude'].iloc[0] - band2_data[band2_data['Date'] == closest_band2_date]['Magnitude'].iloc[0]
+            for date in band1_data['date']:
+                try:
+                    closest_band2_date = closest_date(date, band2_data['date'])
+                    color = band1_data[band1_data['date'] == date]['magnitude'].iloc[0] - band2_data[band2_data['date'] == closest_band2_date]['magnitude'].iloc[0]
                     colors.append(color)
                     dates.append(date)
+                except ValueError:
+                    continue
             
             fig.add_trace(go.Scatter(
                 x=dates,
@@ -123,6 +139,7 @@ def plot_colors():
             ))
 
         fig.update_xaxes(title_text="Days Since First Observation")
+        fig.update_yaxes(title_text="Magnitude")
         fig.update_layout(title="Supernovae Color Curves", margin={"r": 0, "t": 40, "l": 0, "b": 0}, showlegend=True)
 
         # Return error if distance modulus is missing for any supernova
@@ -133,5 +150,4 @@ def plot_colors():
         return fig.to_html(full_html=False)
 
     except Exception as e:
-        print(e)  # Logging the error for better debugging
-        abort(500, description="Internal Server Error")
+        abort(500, description="/plot_colors endpoint failed with error: " + str(e))

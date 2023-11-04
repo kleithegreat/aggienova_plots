@@ -45,4 +45,3 @@ def get_supernovae_by_type(type):
     except Exception as e:
         print(e)  # Logging the error for better debugging
         abort(500, description="Internal Server Error")
-
