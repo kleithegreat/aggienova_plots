@@ -1,4 +1,4 @@
-from flask import Blueprint, request, make_response, abort
+from flask import Blueprint, request, make_response, abort, jsonify
 from utils import read_supernova_data, distance_df, closest_date
 import pandas as pd
 import plotly.graph_objects as go
@@ -76,7 +76,14 @@ def plot():
             error_msg = "No distance modulus data for: " + ", ".join(missing_modulus_sns)
             return make_response(error_msg, 400)
         
-        return fig.to_html(full_html=False)
+        # return fig.to_html(full_html=False)
+
+        # Instead of converting the figure to HTML, build a JSON representation
+        # of the data and layout for the front end to consume
+        figure_json = fig.to_json()
+
+        # Return that JSON
+        return jsonify(figure_json)
     
     except Exception as e:
         abort(500, description="/plot endpoint failed with error: " + str(e))
