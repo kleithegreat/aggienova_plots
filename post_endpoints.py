@@ -15,7 +15,6 @@ def plot():
     """
     try:
         request_data = request.get_json()
-        
         selected_supernovae = request_data["selectedSupernovae"]
         highlighted_supernovae = request_data["highlightedSupernovae"]
         x_axis_type = request_data["xAxisType"]
@@ -27,6 +26,7 @@ def plot():
 
         # iterate over each supernova and its list of filters in selected_supernovae
         for supernova, filters in selected_supernovae.items():
+            supernova = supernova.upper()
             sn_data = read_supernova_data(supernova)
             sn_data = sn_data[["Filter", "MJD[days]", "Mag", "MagErr"]]
             sn_data.columns = ["filter", "date", "magnitude", "magnitude_error"]

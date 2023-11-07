@@ -11,6 +11,8 @@ def all_supernovae():
         supernovae = [file.split('_')[0] for file in os.listdir(data_directory) if file.endswith('.dat')]
         return jsonify(supernovae)
     except Exception as e:
+        print(f"Error: {e}")
+        print("Exited with error code 500")
         abort(500, description="Internal Server Error")
 
 
@@ -21,7 +23,8 @@ def get_filters(supernova):
         available_filters = data["Filter"].unique().tolist()
         return jsonify(available_filters)
     except Exception as e:
-        print(e)  # Logging the error for better debugging
+        print(f"Error: {e}")
+        print("Exited with error code 500")
         abort(500, description="Internal Server Error")
 
 
@@ -31,7 +34,8 @@ def all_types():
         unique_types = distance_df['type'].dropna().unique().tolist()
         return jsonify(unique_types)
     except Exception as e:
-        print(e)  # Logging the error for better debugging
+        print(f"Error: {e}")
+        print("Exited with error code 500")
         abort(500, description="Internal Server Error")
 
 
@@ -43,5 +47,6 @@ def get_supernovae_by_type(type):
         supernovae_with_data = [sn for sn in supernovae_of_type if sn in available_files]
         return jsonify(supernovae_with_data)
     except Exception as e:
-        print(e)  # Logging the error for better debugging
+        print(f"Error: {e}")
+        print("Exited with error code 500")
         abort(500, description="Internal Server Error")
