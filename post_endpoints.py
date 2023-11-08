@@ -155,6 +155,8 @@ def plot_colors():
             return make_response(error_msg, 400)
         
         return fig.to_html(full_html=False)
+        figure_json = fig.to_json()
+        return jsonify(figure_json)
 
     except Exception as e:
         abort(500, description="/plot_colors endpoint failed with error: " + str(e))
