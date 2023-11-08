@@ -154,7 +154,7 @@ def plot_colors():
             error_msg = "No distance modulus data for: " + ", ".join(missing_modulus_sns)
             return make_response(error_msg, 400)
         
-        return fig.to_html(full_html=False)
+        # return fig.to_html(full_html=False)
         figure_json = fig.to_json()
         return jsonify(figure_json)
 
