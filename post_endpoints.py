@@ -69,7 +69,12 @@ def plot():
         fig.update_xaxes(title_text=x_title)
         fig.update_yaxes(title_text=y_title)
 
-        fig.update_layout(title="Supernovae Light Curves", margin={"r": 0, "t": 40, "l": 0, "b": 0})
+        fig.update_layout(
+            title="Supernovae Light Curves", 
+            margin={"r": 0, "t": 40, "l": 0, "b": 0},
+            showlegend=True,
+            font=dict(family="Futura, sans-serif")
+        )
         
         # return error if distance modulus is missing for any supernova
         if missing_modulus_sns:
@@ -148,7 +153,12 @@ def plot_colors():
 
         fig.update_xaxes(title_text="Days Since First Observation")
         fig.update_yaxes(title_text="Magnitude")
-        fig.update_layout(title="Supernovae Color Curves", margin={"r": 0, "t": 40, "l": 0, "b": 0}, showlegend=True)
+        fig.update_layout(
+            title="Supernovae Color Curves", 
+            margin={"r": 0, "t": 40, "l": 0, "b": 0}, 
+            showlegend=True,
+            font=dict(family="Futura, sans-serif")
+        )
 
         # Return error if distance modulus is missing for any supernova
         if missing_modulus_sns:
