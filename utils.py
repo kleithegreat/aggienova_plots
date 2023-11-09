@@ -1,4 +1,6 @@
 import os
+import glob
+import re
 import pandas as pd
 
 
@@ -16,16 +18,24 @@ def read_supernova_data(supernova: str) -> pd.DataFrame:
 
     Args:
         supernova (str): Name of the supernova.
+        data_directory (str): Path to the directory containing data files.
 
     Raises:
-        ValueError: If the header line is not found in the .dat file.
+        ValueError: If no file is found or if the header line is not found in the .dat file.
 
     Returns:
         pd.DataFrame: Data for the given supernova.
     """
-    file_path = os.path.join(data_directory, f"{supernova}_uvotB15.1.dat")
+    # Search for files matching the supernova name and ending with .dat
+    file_pattern = os.path.join(data_directory, f"{supernova}*.dat")
+    matching_files = glob.glob(file_pattern)
 
-    # find start of actual data
+    if not matching_files:
+        raise ValueError(f"No data file found for supernova {supernova}")
+
+    file_path = matching_files[0]  # Assuming the supernova name is unique, so only one file matches
+
+    # Find start of actual data
     with open(file_path, 'r') as file:
         lines = file.readlines()
         for idx, line in enumerate(lines):
@@ -39,6 +49,7 @@ def read_supernova_data(supernova: str) -> pd.DataFrame:
     data.columns = lines[header_line].replace("# ", "").split()
 
     return data
+
 
 
 def closest_date(base_date: pd.Timestamp, date_series: pd.Series, tolerance=TOLERANCE) -> pd.Timestamp:

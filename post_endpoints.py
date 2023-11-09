@@ -86,6 +86,7 @@ def plot():
         return jsonify(figure_json)
     
     except Exception as e:
+        print(e)
         abort(500, description="/plot endpoint failed with error: " + str(e))
 
 

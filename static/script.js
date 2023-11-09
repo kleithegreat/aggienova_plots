@@ -94,6 +94,7 @@ $(document).ready(function() {
         }).fail(function() {
             alert('Failed to load filter data for the selected supernova.');
         });
+        console.log(selectedSupernovae);
     });
 
     $.getJSON('/all_types', function(data) {
