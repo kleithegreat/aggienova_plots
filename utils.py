@@ -1,8 +1,6 @@
 import os
 import glob
-import re
 import pandas as pd
-
 
 current_directory = os.path.dirname(os.path.abspath(__file__))
 data_directory = os.path.join(current_directory, 'data')
@@ -49,7 +47,6 @@ def read_supernova_data(supernova: str) -> pd.DataFrame:
     data.columns = lines[header_line].replace("# ", "").split()
 
     return data
-
 
 
 def closest_date(base_date: pd.Timestamp, date_series: pd.Series, tolerance=TOLERANCE) -> pd.Timestamp:
