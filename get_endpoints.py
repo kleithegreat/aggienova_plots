@@ -39,10 +39,10 @@ def all_types():
         abort(500, description="Internal Server Error")
 
 
-@get_routes.route('/get_supernovae_by_type/<type>', methods=['GET'])
-def get_supernovae_by_type(type):
+@get_routes.route('/get_supernovae_by_type/<supernova_type>', methods=['GET'])
+def get_supernovae_by_type(supernova_type):
     try:
-        supernovae_of_type = distance_df[distance_df['type'] == type]['SNname'].tolist()
+        supernovae_of_type = distance_df[distance_df['type'] == supernova_type]['SNname'].tolist()
         available_files = [file.split('_')[0] for file in os.listdir(data_directory) if file.endswith('.dat')]
         supernovae_with_data = [sn for sn in supernovae_of_type if sn in available_files]
         return jsonify(supernovae_with_data)

@@ -38,6 +38,7 @@ def plot():
             
             # adjust magnitude if necessary
             if y_axis_type == 'Absolute':
+                # noinspection DuplicatedCode
                 modulus = distance_df[distance_df['SNname'].str.lower() == supernova.lower()]['Distance_best'].values
                 if modulus.size > 0 and not pd.isna(modulus[0]):
                     sn_data['magnitude'] = sn_data['magnitude'] - modulus[0]
@@ -125,7 +126,8 @@ def plot_colors():
             sn_data["date"] = sn_data["date"] - min_date
             
             # adjust magnitude for absolute magnitude
-            modulus = distance_df[distance_df['SNname'].str.lower() == supernova.lower()]['Distance_best'].values  # TODO MAKE SURE THIS WORKS
+            # noinspection DuplicatedCode
+            modulus = distance_df[distance_df['SNname'].str.lower() == supernova.lower()]['Distance_best'].values
             if modulus.size > 0 and not pd.isna(modulus[0]):
                 sn_data['magnitude'] = sn_data['magnitude'] - modulus[0]
             else:
@@ -140,7 +142,8 @@ def plot_colors():
             for date in band1_data['date']:
                 try:
                     closest_band2_date = closest_date(date, band2_data['date'])
-                    color = band1_data[band1_data['date'] == date]['magnitude'].iloc[0] - band2_data[band2_data['date'] == closest_band2_date]['magnitude'].iloc[0]
+                    color = (band1_data[band1_data['date'] == date]['magnitude'].iloc[0] -
+                             band2_data[band2_data['date'] == closest_band2_date]['magnitude'].iloc[0])
                     colors.append(color)
                     dates.append(date)
                 except ValueError:

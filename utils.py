@@ -16,7 +16,6 @@ def read_supernova_data(supernova: str) -> pd.DataFrame:
 
     Args:
         supernova (str): Name of the supernova.
-        data_directory (str): Path to the directory containing data files.
 
     Raises:
         ValueError: If no file is found or if the header line is not found in the .dat file.
