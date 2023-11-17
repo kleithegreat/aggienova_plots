@@ -73,7 +73,9 @@ def plot():
             title="Supernovae Light Curves", 
             margin={"r": 0, "t": 40, "l": 0, "b": 0},
             showlegend=True,
-            font=dict(family="Futura, sans-serif")
+            font=dict(family="Futura, sans-serif"),
+            width=1080,
+            height=720
         )
         
         # return error if distance modulus is missing for any supernova
@@ -157,7 +159,9 @@ def plot_colors():
             title="Supernovae Color Curves", 
             margin={"r": 0, "t": 40, "l": 0, "b": 0}, 
             showlegend=True,
-            font=dict(family="Futura, sans-serif")
+            font=dict(family="Futura, sans-serif"),
+            width=1080,
+            height=720
         )
 
         # Return error if distance modulus is missing for any supernova

@@ -1,10 +1,11 @@
 # up next:
 - get supernova by type funne style warning type too broad or whatever
 - are uncertainties for filter magnitudes correlates with other filters? (affects color errors)
-- finish reactifying
+- finish reactifying (figure out highlight band controls)
 - make it plot only filter plot or only color plot: toggle between views
 - impement tailwind (or at least SOME css)
 - dockerize properly
+- make monorepo?
 
 ---
 
