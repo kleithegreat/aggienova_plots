@@ -46,6 +46,6 @@ function ColorPlotComponent({ supernovae, band1, band2, highlighted }) {
             />
         </div>
     );
-};
+}
 
 export default ColorPlotComponent;

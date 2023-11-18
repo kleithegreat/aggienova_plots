@@ -41,9 +41,7 @@ function App() {
   };
 
   const handleTypeSelection = async (selectedOptions) => {
-    if (selectedOptions === null) {
-      return;
-    } else {
+    if (selectedOptions === null) {} else {
       let supernovaeOfTypes = [];
       const typeRequests = selectedOptions.map(option =>
         fetch(`http://localhost:5000/get_supernovae_by_type/${option.value}`)
