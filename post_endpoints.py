@@ -11,7 +11,7 @@ def plot():
     """Plots the light curves for the selected supernovae and filters.
 
     Returns:
-        str: HTML string of the plotly figure
+        str: JSON representation of the HTML string of the plotly figure
     """
     try:
         request_data = request.get_json()
@@ -60,7 +60,8 @@ def plot():
                         type='data',
                         array=filter_data["magnitude_error"],
                         visible=True
-                    )
+                    ),
+                    connectgaps=True,
                 ))
 
         fig.update_yaxes(autorange="reversed")
@@ -89,8 +90,6 @@ def plot():
         # Instead of converting the figure to HTML, build a JSON representation
         # of the data and layout for the front end to consume
         figure_json = fig.to_json()
-
-        # Return that JSON
         return jsonify(figure_json)
     
     except Exception as e:
@@ -103,7 +102,7 @@ def plot_colors():
     """Plots the color curves for the selected supernovae and filters.
 
     Returns:
-        str: HTML string of the plotly figure
+        str: JSON representation of HTML string of the plotly figure
     """
     try:
         request_data = request.get_json()
@@ -148,12 +147,30 @@ def plot_colors():
                     dates.append(date)
                 except ValueError:
                     continue
+
+            # propagate errors
+            errors = []
+            for date in dates:
+                try:
+                    closest_band2_date = closest_date(date, band2_data['date'])
+                    magerr1 = band1_data[band1_data['date'] == date]['magnitude_error'].iloc[0]
+                    magerr2 = band2_data[band2_data['date'] == closest_band2_date]['magnitude_error'].iloc[0]
+                    error = (magerr1**2 + magerr2**2)**0.5
+                    errors.append(error)
+                except ValueError:
+                    continue
             
             fig.add_trace(go.Scatter(
                 x=dates,
                 y=colors,
                 mode='lines+markers',
-                name=f"{supernova} ({band1} - {band2})"
+                name=f"{supernova} ({band1} - {band2})",
+                connectgaps=True,
+                error_y=dict(
+                    type='data',
+                    array=errors,
+                    visible=True
+                )
             ))
 
         fig.update_xaxes(title_text="Days Since First Observation")
