@@ -1,7 +1,8 @@
 # up next:
-- plot by filter, general filter selection for all supernovae
-- impement tailwind (or at least SOME css)
-- dockerize properly
+- change to select by: name, type, filter and list of current supernovae
+    - click on each supernova to get toggle list of filters
+
+- add option to toggle on and off filters for all supernovae
 
 lots of bad data - add by number of data points, add by date
 
