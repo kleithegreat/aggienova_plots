@@ -1,0 +1,90 @@
+/* App.css */
+.App {
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+  gap: 10px;
+  padding: 10px;
+  font-family: 'Futura', sans-serif;
+}
+
+/* Apply the font family to all child buttons and selects */
+.App button,
+.App select {
+  font-family: inherit;
+}
+
+/* Combine shared styles to reduce redundancy */
+.top-controls, 
+.left-controls, 
+.right-controls, 
+.AxisToggleComponent, 
+.plot-container, 
+.FilterBandSelection {
+  display: flex;
+  gap: 10px;
+}
+
+/* Top-level controls */
+.top-controls {
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.left-controls, 
+.right-controls {
+  max-width: 50%;
+  flex-wrap: wrap;
+}
+
+.left-controls {
+  justify-content: flex-start;
+}
+
+.right-controls {
+  align-items: flex-start;
+  justify-content: flex-start;
+  float: left;
+}
+
+/* Supernova selection styles */
+.SupernovaSelection {
+  align-items: center;
+}
+
+.SupernovaSelection .Select {
+  width: 300px;
+  height: 40px;
+  overflow: hidden;
+}
+
+.SupernovaSelection .Select__control {
+  overflow-y: auto;
+}
+
+.SupernovaSelection .Select__menu {
+  position: absolute;
+  width: auto;
+  max-height: 300px;
+  overflow-y: scroll;
+}
+
+/* Responsive design adjustments */
+@media (max-width: 768px) {
+  .top-controls, 
+  .left-controls, 
+  .right-controls, 
+  .plot-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .right-controls {
+    margin-top: 10px;
+  }
+}
+
+@media (max-width: 600px) {
+  .SupernovaSelection {
+    flex-direction: column;
+  }
+}

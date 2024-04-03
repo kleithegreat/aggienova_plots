@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supernovae Light Curves</title>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</head>
+<body>
+    <h1>Supernovae Light Curves</h1>
+    <div id="supernovae-selection">
+        <input type="text" id="supernova-search" placeholder="Search for supernova">
+        <select id="supernova-dropdown">
+            <option value="" selected="selected">Select a Supernova</option>
+        </select>
+        <button id="add-supernova">Add Supernova</button>
+        <select id="type-dropdown">
+            <option value="" selected="selected">Select a Supernova Type</option>
+        </select>
+        <button id="add-by-type">Add By Type</button>
+        <button id="toggle-xaxis">Toggle X-Axis (MJD)</button>
+        <button id="toggle-yaxis">Toggle Y-Axis (Apparent)</button>
+        <button id="remove-all">Remove All</button>
+    </div>
+    <div id="color-selection">
+        <h2>Supernova Color Plots</h2>
+        <select id="band1-dropdown">
+            <option value="" selected="selected">Select First Band</option>
+        </select>
+        <select id="band2-dropdown">
+            <option value="" selected="selected">Select Second Band</option>
+        </select>
+    </div>
+    <div id="selected-supernovae"></div>
+    <div id="plot-div"></div>
+    <div id="color-plot-div"></div>
+</body>
+</html>
