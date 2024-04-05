@@ -12,7 +12,7 @@ const SNePlotList: React.FC = () => {
 
     return (
         <div>
-            <h2>Selected Supernovae</h2>
+            <h2>Selected Supernovae:</h2>
             <ul>
                 {selectedSNe.map((sn: Supernova) => (
                     <li

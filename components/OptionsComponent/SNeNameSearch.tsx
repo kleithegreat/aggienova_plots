@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Select from 'react-select';
+import { Autocomplete, TextField } from '@mui/material';
 import { useDebounce } from 'use-debounce';
 import { Supernova } from '../../lib/index';
 import { useSelectedSNe } from '../../contexts/SelectedSNeContext';
@@ -28,31 +28,28 @@ const SNeNameSearch: React.FC = () => {
         fetchSNNames();
     }, []);
 
-    const handleAdd = (sneName: string | undefined) => {
-        if (sneName) {
-            const selectedSN = availableSNe.find(sn => sn.sn_name === sneName);
-            if (selectedSNe.some(sn => sn.sn_name === sneName)) return
-            if (selectedSN) {
-                setSelectedSNe([...selectedSNe, selectedSN]);
-            }
+    const handleAdd = (event: React.SyntheticEvent, value: Supernova | null) => {
+        if (value) {
+            if (selectedSNe.some(sn => sn.sn_name === value.sn_name)) return;
+            setSelectedSNe([...selectedSNe, value]);
         }
-
-        // console.log('Selected SNe: ', selectedSNe);
     };
 
-    const filteredOptions = availableSNe
-        .filter((sn) => sn.sn_name.toLowerCase().includes(debouncedSearchTerm.toLowerCase()))
-        .map((sn) => ({ value: sn.sn_name, label: sn.sn_name }));
+    const filteredOptions = availableSNe.filter((sn) =>
+        sn.sn_name.toLowerCase().includes(debouncedSearchTerm.toLowerCase())
+    );
 
     return (
-        <Select
+        <Autocomplete
             options={filteredOptions}
-            onInputChange={(newValue) => setSearchTerm(newValue)}
-            onChange={(selected) => handleAdd(selected?.value)}
-            placeholder="Search by name..."
-            noOptionsMessage={() => 'No supernovae found'}
-            isClearable={true}
-            styles={{}}
+            getOptionLabel={(option) => option.sn_name}
+            renderInput={(params) => (
+                <TextField {...params} label="Search by name..." variant="outlined" />
+            )}
+            onInputChange={(event, newValue) => setSearchTerm(newValue)}
+            onChange={handleAdd}
+            noOptionsText="No supernovae found"
+            clearOnBlur
         />
     );
 };

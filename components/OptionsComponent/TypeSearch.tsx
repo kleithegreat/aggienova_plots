@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Select from 'react-select';
+import { Autocomplete, TextField } from '@mui/material';
 import { useDebounce } from 'use-debounce';
 import { SnType } from '../../lib/index';
 import { useSelectedSNe } from '../../contexts/SelectedSNeContext';
@@ -28,39 +28,36 @@ const TypeSearch: React.FC = () => {
         fetchTypes();
     }, []);
 
-    const filteredOptions = availableTypes
-        .filter((type) => type.type_name.toLowerCase().includes(debouncedSearchTerm.toLowerCase()))
-        .map((type) => ({ value: type.type_name, label: type.type_name }));
+    const filteredOptions = availableTypes.filter((type) =>
+        type.type_name.toLowerCase().includes(debouncedSearchTerm.toLowerCase())
+    );
 
-    const handleSearch = async (type: string | undefined) => {
-        if (type) {
-            const selectedType = availableTypes.find((t) => t.type_name === type);
-            if (selectedType) {
-                const { data: supernovae, error } = await supabase
-                    .from('supernovae')
-                    .select('*')
-                    .eq('type_id', selectedType.type_id);
+    const handleSearch = async (event: React.SyntheticEvent, value: SnType | null) => {
+        if (value) {
+            const { data: supernovae, error } = await supabase
+                .from('supernovae')
+                .select('*')
+                .eq('type_id', value.type_id);
 
-                if (error) {
-                    console.error('Error fetching supernovae by type in TypeSearch: ', error);
-                } else {
-                    setSelectedSNe([...selectedSNe, ...(supernovae || [])]);
-                }
+            if (error) {
+                console.error('Error fetching supernovae by type in TypeSearch: ', error);
             } else {
-                console.error('Selected type not found in available types');
+                setSelectedSNe([...selectedSNe, ...(supernovae || [])]);
             }
         }
     };
 
     return (
-        <Select
+        <Autocomplete
             options={filteredOptions}
-            onInputChange={(newValue) => setSearchTerm(newValue)}
-            onChange={(selected) => handleSearch(selected?.value)}
-            placeholder="Search by type..."
-            noOptionsMessage={() => 'No types found'}
-            isClearable={true}
-            styles={{}}
+            getOptionLabel={(option) => option.type_name}
+            renderInput={(params) => (
+                <TextField {...params} label="Search by type..." variant="outlined" />
+            )}
+            onInputChange={(event, newValue) => setSearchTerm(newValue)}
+            onChange={handleSearch}
+            noOptionsText="No types found"
+            clearOnBlur
         />
     );
 };

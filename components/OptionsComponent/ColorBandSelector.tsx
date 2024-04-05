@@ -9,7 +9,6 @@ const ColorBandSelector: React.FC = () => {
 
   return (
     <div className="flex items-center space-x-2">
-      <span>color bands</span>
       <Select
         value={firstColor}
         onChange={(e) => setFirstColor(e.target.value as ColorOption)}
