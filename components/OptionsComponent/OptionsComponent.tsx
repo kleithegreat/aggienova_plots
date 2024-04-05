@@ -1,5 +1,5 @@
 import React from 'react';
-import { Paper, Grid, TextField, Button } from '@mui/material';
+import { Paper, Grid } from '@mui/material';
 import SNeNameSearch from './SNeNameSearch';
 import TypeSearch from './TypeSearch';
 import SNePlotList from './SNePlotList';
@@ -11,12 +11,12 @@ import ResetButton from './ResetButton';
 
 const OptionsComponent: React.FC = () => {
   return (
-    <Paper elevation={3} sx={{ padding: 2 }}>
-      <Grid container spacing={2} direction="column">
-        <Grid item>
+    <Paper elevation={3} sx={{ padding: 2, width: '100%' }}>
+      <Grid container spacing={2} direction="column" alignItems="center" justifyContent="center" sx={{ minWidth: 320 }}>
+        <Grid item sx={{ width: '100%' }}>
           <SNeNameSearch />
         </Grid>
-        <Grid item>
+        <Grid item sx={{ width: '100%' }}>
           <TypeSearch />
         </Grid>
         <Grid item>
