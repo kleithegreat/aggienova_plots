@@ -1,10 +1,10 @@
-import React, { createContext, useContext, useState } from 'react';
-import type { ReactNode } from 'react';
+import React, { createContext, useContext, useState } from "react";
+import type { ReactNode } from "react";
 
-type XAxisType = 'mjd' | 'days_since_first_observation';
-type YAxisType = 'absolute_magnitude' | 'apparent_magnitude';
-type PlotType = 'magnitude' | 'color';
-type ColorOption = 'U' | 'V' | 'B' | 'UVW1' | 'UVW2' | 'UVM2';
+type XAxisType = "mjd" | "dsfo";
+type YAxisType = "apparent" | "absolute";
+type PlotType = "magnitude" | "color";
+export type ColorOption = "U" | "V" | "B" | "UVW1" | "UVW2" | "UVM2";
 
 interface PlotSettingsContextType {
   xAxisType: XAxisType;
@@ -24,7 +24,7 @@ const PlotSettingsContext = createContext<PlotSettingsContextType | undefined>(u
 export const usePlotSettings = () => {
   const context = useContext(PlotSettingsContext);
   if (!context) {
-    throw new Error('usePlotSettings must be used within a PlotSettingsProvider');
+    throw new Error("usePlotSettings must be used within a PlotSettingsProvider");
   }
   return context;
 };
@@ -34,11 +34,11 @@ interface PlotSettingsProviderProps {
 }
 
 export const PlotSettingsProvider: React.FC<PlotSettingsProviderProps> = ({ children }) => {
-  const [xAxisType, setXAxisType] = useState<XAxisType>('mjd');
-  const [yAxisType, setYAxisType] = useState<YAxisType>('apparent_magnitude');
-  const [plotType, setPlotType] = useState<PlotType>('magnitude');
-  const [firstColor, setFirstColor] = useState<ColorOption>('U');
-  const [secondColor, setSecondColor] = useState<ColorOption>('V');
+  const [xAxisType, setXAxisType] = useState<XAxisType>("mjd");
+  const [yAxisType, setYAxisType] = useState<YAxisType>("apparent");
+  const [plotType, setPlotType] = useState<PlotType>("magnitude");
+  const [firstColor, setFirstColor] = useState<ColorOption>("B");
+  const [secondColor, setSecondColor] = useState<ColorOption>("B");
 
   return (
     <PlotSettingsContext.Provider

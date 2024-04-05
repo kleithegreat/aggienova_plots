@@ -1,4 +1,0 @@
-Flask>=2.0.0
-Flask-Cors>=3.0.10
-plotly>=4.14.3
-pandas>=1.2.0

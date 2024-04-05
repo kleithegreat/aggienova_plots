@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
 import { useDebounce } from 'use-debounce';
-import { SnType } from '../lib/index';
-import { useSelectedSNe } from '../contexts/SelectedSNeContext';
-import { supabase } from '../lib/supabase';
+import { SnType } from '../../lib/index';
+import { useSelectedSNe } from '../../contexts/SelectedSNeContext';
+import { supabase } from '../../lib/supabase';
 
 const TypeSearch: React.FC = () => {
     const { selectedSNe, setSelectedSNe } = useSelectedSNe();
@@ -60,9 +60,7 @@ const TypeSearch: React.FC = () => {
             placeholder="Search by type..."
             noOptionsMessage={() => 'No types found'}
             isClearable={true}
-            styles={{
-                // Customize the styles here to match your design
-            }}
+            styles={{}}
         />
     );
 };

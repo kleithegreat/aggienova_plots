@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
 import { useDebounce } from 'use-debounce';
-import { Supernova } from '../lib/index';
-import { useSelectedSNe } from '../contexts/SelectedSNeContext';
-import { supabase } from '../lib/supabase';
+import { Supernova } from '../../lib/index';
+import { useSelectedSNe } from '../../contexts/SelectedSNeContext';
+import { supabase } from '../../lib/supabase';
 
 const SNeNameSearch: React.FC = () => {
     const { selectedSNe, setSelectedSNe } = useSelectedSNe();
@@ -37,7 +37,7 @@ const SNeNameSearch: React.FC = () => {
             }
         }
 
-        console.log('Selected SNe: ', selectedSNe);
+        // console.log('Selected SNe: ', selectedSNe);
     };
 
     const filteredOptions = availableSNe
@@ -52,9 +52,7 @@ const SNeNameSearch: React.FC = () => {
             placeholder="Search by name..."
             noOptionsMessage={() => 'No supernovae found'}
             isClearable={true}
-            styles={{
-                // Customize the styles here to match your design
-            }}
+            styles={{}}
         />
     );
 };
