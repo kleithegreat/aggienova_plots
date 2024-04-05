@@ -1,10 +1,13 @@
-import { SelectedSNeProvider } from '../lib/SelectedSNeContext';
+import { SelectedSNeProvider } from '../contexts/SelectedSNeContext';
+import { PlotSettingsProvider } from '../contexts/PlotSettingsContext';
 import type { AppProps } from 'next/app';
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <SelectedSNeProvider>
-      <Component {...pageProps} />
+      <PlotSettingsProvider>
+        <Component {...pageProps} />
+      </PlotSettingsProvider>
     </SelectedSNeProvider>
   );
 }

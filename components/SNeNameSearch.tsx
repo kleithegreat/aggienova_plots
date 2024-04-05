@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
 import { useDebounce } from 'use-debounce';
 import { Supernova } from '../lib/index';
-import { useSelectedSNe } from '../lib/SelectedSNeContext';
+import { useSelectedSNe } from '../contexts/SelectedSNeContext';
 import { supabase } from '../lib/supabase';
 
 const SNeNameSearch: React.FC = () => {
@@ -51,6 +51,7 @@ const SNeNameSearch: React.FC = () => {
             onChange={(selected) => handleAdd(selected?.value)}
             placeholder="Search by name..."
             noOptionsMessage={() => 'No supernovae found'}
+            isClearable={true}
             styles={{
                 // Customize the styles here to match your design
             }}

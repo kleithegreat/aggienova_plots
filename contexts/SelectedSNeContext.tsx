@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from 'react';
 import type { ReactNode } from 'react';
-import { Supernova } from './index';
+import { Supernova } from '../lib/index';
 
 interface SelectedSNeContextType {
   selectedSNe: Supernova[];
