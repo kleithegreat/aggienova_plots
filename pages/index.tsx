@@ -5,14 +5,16 @@ import OptionsComponent from "../components/OptionsComponent/OptionsComponent";
 
 const Home: React.FC = () => {
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={8}>
-        <PlotComponent />
+    <div>
+      <Grid container>
+        <Grid item xs={9} className="pt-4 pl-4 pb-4 pr-2">
+          <PlotComponent />
+        </Grid>
+        <Grid item xs={3} className="pt-4 pr-4 pb-4 pl-2">
+          <OptionsComponent />
+        </Grid>
       </Grid>
-      <Grid item xs={4}>
-        <OptionsComponent />
-      </Grid>
-    </Grid>
+    </div>
   );
 };
 

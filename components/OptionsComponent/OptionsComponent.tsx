@@ -11,7 +11,7 @@ import ResetButton from './ResetButton';
 
 const OptionsComponent: React.FC = () => {
   return (
-    <Paper elevation={3} sx={{ padding: 2, width: '100%' }}>
+    <Paper elevation={3} sx={{ padding: 2, width: '100%', minHeight: 'calc(100vh - 32px)' }}>
       <Grid container spacing={2} direction="column" alignItems="center" justifyContent="center" sx={{ minWidth: 320 }}>
         <Grid item sx={{ width: '100%' }}>
           <SNeNameSearch />
