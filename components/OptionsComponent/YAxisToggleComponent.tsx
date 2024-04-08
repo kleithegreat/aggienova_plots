@@ -1,9 +1,15 @@
 import { useState, useEffect } from "react";
 import { usePlotSettings } from "../../contexts/PlotSettingsContext";
+import { useSelectedSNe } from "../../contexts/SelectedSNeContext";
 import Switch from "@mui/material/Switch";
 
-const YAxisToggleComponent: React.FC = () => {
+interface YAxisToggleComponentProps {
+  onNoData: (message: string) => void;
+}
+
+const YAxisToggleComponent: React.FC<YAxisToggleComponentProps> = ({ onNoData }) => {
   const { yAxisType, setYAxisType } = usePlotSettings();
+  const { selectedSNe, setSelectedSNe } = useSelectedSNe();
   const [checked, setChecked] = useState(yAxisType === "absolute");
 
   useEffect(() => {
@@ -11,8 +17,25 @@ const YAxisToggleComponent: React.FC = () => {
   }, [yAxisType]);
 
   const handleChange = () => {
-    setChecked(!checked);
-    setYAxisType(checked ? "apparent" : "absolute");
+    const newChecked = !checked;
+    setChecked(newChecked);
+
+    if (newChecked) {
+      // Toggling from apparent to absolute
+      const filteredSNe = selectedSNe.filter((sn) => sn.distance_modulus !== null);
+      const removedSNe = selectedSNe.filter((sn) => sn.distance_modulus === null);
+
+      if (removedSNe.length > 0) {
+        const snNames = removedSNe.map((sn) => sn.sn_name).join(", ");
+        onNoData(`The following supernovae have been removed due to missing distance modulus: ${snNames}`);
+      }
+
+      setSelectedSNe(filteredSNe);
+      setYAxisType("absolute");
+    } else {
+      // Toggling from absolute to apparent
+      setYAxisType("apparent");
+    }
   };
 
   return (

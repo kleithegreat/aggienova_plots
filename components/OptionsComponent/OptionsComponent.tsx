@@ -27,7 +27,7 @@ const OptionsComponent: React.FC<OptionsComponentProps> = ({ onNoData }) => {
           <XAxisToggleComponent />
         </Grid>
         <Grid item>
-          <YAxisToggleComponent />
+          <YAxisToggleComponent onNoData={onNoData} />
         </Grid>
         <Grid item>
           <PlotTypeToggleComponent />

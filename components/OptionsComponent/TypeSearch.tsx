@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { Autocomplete, TextField } from '@mui/material';
 import { useDebounce } from 'use-debounce';
-import { SnType } from '../../lib/index';
+import { SnType, Supernova } from '../../lib/index';
 import { useSelectedSNe } from '../../contexts/SelectedSNeContext';
+import { usePlotSettings } from '../../contexts/PlotSettingsContext';
 import { supabase } from '../../lib/supabase';
 
 interface TypeSearchProps {
     onNoData: (message: string) => void;
 }
 
-const TypeSearch: React.FC<TypeSearchProps> = () => {
+const TypeSearch: React.FC<TypeSearchProps> = ({ onNoData }) => {
     const { selectedSNe, setSelectedSNe } = useSelectedSNe();
+    const { yAxisType } = usePlotSettings();
     const [searchTerm, setSearchTerm] = useState('');
     const [debouncedSearchTerm] = useDebounce(searchTerm, 200);
     const [availableTypes, setAvailableTypes] = useState<SnType[]>([]);
@@ -46,7 +48,33 @@ const TypeSearch: React.FC<TypeSearchProps> = () => {
             if (error) {
                 console.error('Error fetching supernovae by type in TypeSearch: ', error);
             } else {
-                setSelectedSNe([...selectedSNe, ...(supernovae || [])]);
+                const filteredSupernovae = await Promise.all(
+                    (supernovae || []).map(async (sn: Supernova) => {
+                        const { data: lightCurvesData, error: lightCurvesError } = await supabase
+                            .from('light_curves')
+                            .select('*')
+                            .eq('sn_id', sn.sn_id)
+                            .limit(1);
+
+                        if (lightCurvesError) {
+                            console.error('Error checking photometry data in TypeSearch: ', lightCurvesError);
+                            onNoData(`Error checking photometry data for ${sn.sn_name}. Skipping.`);
+                            return null;
+                        } else if (lightCurvesData && lightCurvesData.length === 0) {
+                            onNoData(`No photometry data available for ${sn.sn_name}. Skipping.`);
+                            return null;
+                        } else {
+                            if (yAxisType === 'absolute' && sn.distance_modulus === null) {
+                                onNoData(`No distance modulus available for ${sn.sn_name}. Skipping.`);
+                                return null;
+                            }
+                            return sn;
+                        }
+                    })
+                );
+
+                const validSupernovae = filteredSupernovae.filter((sn) => sn !== null) as Supernova[];
+                setSelectedSNe([...selectedSNe, ...validSupernovae]);
             }
         }
     };
