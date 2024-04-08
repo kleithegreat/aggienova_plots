@@ -1,5 +1,5 @@
 import React from 'react';
-import { Paper, Grid } from '@mui/material';
+import { Paper } from '@mui/material';
 import SNeNameSearch from './SNeNameSearch';
 import TypeSearch from './TypeSearch';
 import SNePlotList from './SNePlotList';
@@ -15,33 +15,33 @@ interface OptionsComponentProps {
 
 const OptionsComponent: React.FC<OptionsComponentProps> = ({ onNoData }) => {
   return (
-    <Paper elevation={3} sx={{ padding: 2, width: '100%', minHeight: 'calc(100vh - 32px)' }}>
-      <Grid container spacing={2} direction="column" alignItems="center" justifyContent="center">
-        <Grid item sx={{ width: '100%' }}>
+    <Paper elevation={3} className="p-4 w-full min-h-[calc(100vh-32px)]">
+      <div className="flex flex-col items-center justify-center space-y-4">
+        <div className="w-full">
           <SNeNameSearch onNoData={onNoData} />
-        </Grid>
-        <Grid item sx={{ width: '100%' }}>
+        </div>
+        <div className="w-full">
           <TypeSearch onNoData={onNoData} />
-        </Grid>
-        <Grid item>
+        </div>
+        <div>
           <XAxisToggleComponent />
-        </Grid>
-        <Grid item>
+        </div>
+        <div>
           <YAxisToggleComponent onNoData={onNoData} />
-        </Grid>
-        <Grid item>
+        </div>
+        <div>
           <PlotTypeToggleComponent />
-        </Grid>
-        <Grid item>
+        </div>
+        <div>
           <ColorBandSelector />
-        </Grid>
-        <Grid item>
+        </div>
+        <div>
           <SNePlotList />
-        </Grid>
-        <Grid item>
+        </div>
+        <div>
           <ResetButton />
-        </Grid>
-      </Grid>
+        </div>
+      </div>
     </Paper>
   );
 };

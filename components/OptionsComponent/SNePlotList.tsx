@@ -12,24 +12,22 @@ const SNePlotList: React.FC = () => {
 
     return (
         <div>
-            <h2>Selected Supernovae:</h2>
-            <ul>
-                {selectedSNe.map((sn: Supernova) => (
-                    <li
-                        key={sn.sn_id}
-                        style={{
-                            cursor: 'pointer',
-                            color: hoveredSn === sn.sn_id ? 'grey' : 'inherit',
-                            textDecoration: hoveredSn === sn.sn_id ? 'line-through' : 'none',
-                        }}
-                        onMouseEnter={() => setHoveredSn(sn.sn_id)}
-                        onMouseLeave={() => setHoveredSn(null)}
-                        onClick={() => handleClick(sn.sn_id)}
-                    >
-                        {sn.sn_name}
-                    </li>
-                ))}
-            </ul>
+            <b>Selected Supernovae:</b>
+            <div className="max-h-72 overflow-y-auto">
+                <ul>
+                    {selectedSNe.map((sn: Supernova) => (
+                        <li
+                            key={sn.sn_id}
+                            className={`cursor-pointer ${hoveredSn === sn.sn_id ? 'text-gray-500 line-through' : 'text-black'}`}
+                            onMouseEnter={() => setHoveredSn(sn.sn_id)}
+                            onMouseLeave={() => setHoveredSn(null)}
+                            onClick={() => handleClick(sn.sn_id)}
+                        >
+                            {sn.sn_name}
+                        </li>
+                    ))}
+                </ul>
+            </div>
         </div>
     );
 };
