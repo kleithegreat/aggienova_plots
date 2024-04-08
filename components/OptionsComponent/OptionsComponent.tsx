@@ -9,15 +9,19 @@ import PlotTypeToggleComponent from './PlotTypeToggleComponent';
 import ColorBandSelector from './ColorBandSelector';
 import ResetButton from './ResetButton';
 
-const OptionsComponent: React.FC = () => {
+interface OptionsComponentProps {
+  onNoData: (message: string) => void;
+}
+
+const OptionsComponent: React.FC<OptionsComponentProps> = ({ onNoData }) => {
   return (
     <Paper elevation={3} sx={{ padding: 2, width: '100%', minHeight: 'calc(100vh - 32px)' }}>
-      <Grid container spacing={2} direction="column" alignItems="center" justifyContent="center" sx={{ minWidth: 320 }}>
+      <Grid container spacing={2} direction="column" alignItems="center" justifyContent="center">
         <Grid item sx={{ width: '100%' }}>
-          <SNeNameSearch />
+          <SNeNameSearch onNoData={onNoData} />
         </Grid>
         <Grid item sx={{ width: '100%' }}>
-          <TypeSearch />
+          <TypeSearch onNoData={onNoData} />
         </Grid>
         <Grid item>
           <XAxisToggleComponent />

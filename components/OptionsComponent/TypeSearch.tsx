@@ -5,7 +5,11 @@ import { SnType } from '../../lib/index';
 import { useSelectedSNe } from '../../contexts/SelectedSNeContext';
 import { supabase } from '../../lib/supabase';
 
-const TypeSearch: React.FC = () => {
+interface TypeSearchProps {
+    onNoData: (message: string) => void;
+}
+
+const TypeSearch: React.FC<TypeSearchProps> = () => {
     const { selectedSNe, setSelectedSNe } = useSelectedSNe();
     const [searchTerm, setSearchTerm] = useState('');
     const [debouncedSearchTerm] = useDebounce(searchTerm, 200);

@@ -1,6 +1,22 @@
-## todo
-- check if photometry data exists for every selection in sn dropdown
-    - do the same for select by type
-    - use the mui notification component to display a message if the data is missing
+# todo
+- check if photometry data exists for select by type - **TypeSearch component**
+    - also do this check when y axis is set from apparent magnitude TO absolute magnitude - **YAxisToggle component**
 
-upshot: do something abt the sns with no photometry data
+- FIX MAX HEIGHT
+    - sn name list needs a scrollbar if the list is too long
+
+
+- color plot lmao
+
+
+
+
+
+
+
+- align menu items nicely
+    - filter band dropdown too tall looks weird
+
+
+
+- clean up database bruh
