@@ -1,20 +1,14 @@
 # todo
-- FIX MAX HEIGHT
-    - sn name list needs a scrollbar if the list is too long
-
 - color plot lmao
 
 
-
-
 - align menu items nicely
-    - filter band dropdown too tall looks weird
 
 
 
 
 
-
+- use only available sn names for dropdown (and add by type)
 
 
 
