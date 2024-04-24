@@ -33,4 +33,4 @@ The `useEffect` hook in the `PlotComponent` is responsible for fetching and proc
 14. The `useEffect` hook is triggered whenever any of the dependencies (`selectedSNe`, `xAxisType`, `yAxisType`, `plotType`, `firstColor`, `secondColor`) change (automatic plot updates).
 This `useEffect` hook ensures that the plot data is fetched and processed whenever the selected supernovae or plot settings change, allowing for dynamic updates to the plot based on user interactions.
 
-There are probably quite a few anti-patterns in this code, but it works for now. 
+> There are probably quite a few anti-patterns in this code, but it works for now. 

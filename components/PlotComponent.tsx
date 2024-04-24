@@ -100,7 +100,11 @@ const PlotComponent: React.FC = () => {
             }
             
           } else { // plotType === "color"
-            console.log("lmao");
+            console.log("lmfao");
+            for (const sn of selectedSNe) {
+              // compute colors using firstColor - secondColor
+              
+            }
           }
         } catch (error) { console.error("Error fetching light curves in PlotComponent: ", error); }
       } catch (error) { console.error("Error fetching filters in PlotComponent: ", error); }
