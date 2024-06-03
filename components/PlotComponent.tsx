@@ -52,9 +52,9 @@ const PlotComponent: React.FC = () => {
             for (const sn of selectedSNe) {
               for (const [filterID, filterName] of Object.entries(filterTypeDict)) {
                 if (!lightCurvesDict[sn.sn_id]?.[filterID]) continue;
-            
+
                 let combinedData = [];
-            
+
                 for (const curve of lightCurvesDict[sn.sn_id][filterID]) {
                   combinedData.push({
                     x: curve.mjd,
@@ -100,10 +100,81 @@ const PlotComponent: React.FC = () => {
             }
             
           } else { // plotType === "color"
-            console.log("lmfao");
             for (const sn of selectedSNe) {
+              // get filter ids of first and second color
+              const firstColorID = Object.keys(filterTypeDict).find(key => filterTypeDict[key] === firstColor);
+              const secondColorID = Object.keys(filterTypeDict).find(key => filterTypeDict[key] === secondColor);
+
               // compute colors using firstColor - secondColor
+              if (!firstColorID || !secondColorID) continue;
+
+              const firstFilterData = lightCurvesDict[sn.sn_id]?.[firstColorID];
+              const secondFilterData = lightCurvesDict[sn.sn_id]?.[secondColorID];
+
+              if (!firstFilterData || !secondFilterData) continue;
+
+              // create combined data arrays for both filters
+              const firstFilterCombinedData = firstFilterData.map((data: { mjd: any; magnitude: any; magnitude_error: any; }) => ({
+                x: data.mjd,
+                y: data.magnitude || NaN,
+                errorY: data.magnitude_error || NaN,
+              }));
+              const secondFilterCombinedData = secondFilterData.map((data: { mjd: any; magnitude: any; magnitude_error: any; }) => ({
+                x: data.mjd,
+                y: data.magnitude || NaN,
+                errorY: data.magnitude_error || NaN,
+              }));
+
+              // sort both arrays by x
+              firstFilterCombinedData.sort((a: { x: number; }, b: { x: number; }) => a.x - b.x);
+              secondFilterCombinedData.sort((a: { x: number; }, b: { x: number; }) => a.x - b.x);
               
+              // compute color array
+              const colorData = [];
+              // for each x in top filter, find closest x in bottom filter within 1 day
+              for (const point of firstFilterCombinedData) {
+                const closestSecondPoint = secondFilterCombinedData.find(
+                  (secondPoint: typeof secondFilterData[0]) => Math.abs(secondPoint.x - point.x) <= 1
+                );
+
+                // if found, compute color and add to color array and pop corresponding point from bottom filter
+                if (closestSecondPoint) {
+                  const color = point.y - closestSecondPoint.y;
+                  // calculate propagated error
+                  const errorPropagated = Math.sqrt(
+                    Math.pow(point.errorY || 0, 2) + Math.pow(closestSecondPoint.errorY || 0, 2)
+                  );
+                  colorData.push({x: point.x, y: color, errorY: errorPropagated});
+                  secondFilterCombinedData.splice(secondFilterCombinedData.indexOf(closestSecondPoint), 1);
+                }
+              }
+
+              // plot color array
+              if (colorData.length > 0) {
+                // adjust all x values to start from 0
+                const minX = Math.min(...colorData.map(data => data.x));
+                const x = colorData.map(data => data.x - minX);
+                const y = colorData.map(data => data.y);
+                const errorY = colorData.map(data => data.errorY);
+
+                setPlotData((prev) => [
+                  ...prev,
+                  {
+                    x,
+                    y,
+                    error_y: {
+                      type: "data",
+                      array: errorY,
+                      visible: true,
+                    },
+                    mode: "lines+markers",
+                    name: `${sn.sn_name} (${firstColor} - ${secondColor})`,
+                    connectgaps: false,
+                  },
+                ]);
+              } else {
+                console.log("No data to plot for color plot.");
+              }
             }
           }
         } catch (error) { console.error("Error fetching light curves in PlotComponent: ", error); }
