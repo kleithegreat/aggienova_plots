@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState } from "react";
 import type { ReactNode } from "react";
 
-type XAxisType = "mjd" | "dsfo";
+export type XAxisType = "mjd" | "dsfo" | "peak";
 type YAxisType = "apparent" | "absolute";
 type PlotType = "magnitude" | "color";
 export type ColorOption = "U" | "V" | "B" | "UVW1" | "UVW2" | "UVM2";

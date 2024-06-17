@@ -1,43 +1,44 @@
 import { useState, useEffect } from "react";
 import { usePlotSettings } from "../../contexts/PlotSettingsContext";
-import Switch from "@mui/material/Switch";
+import ToggleButton from "@mui/material/ToggleButton";
+import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
+import type { XAxisType } from "../../contexts/PlotSettingsContext";
 
 const XAxisToggleComponent: React.FC = () => {
   const { xAxisType, setXAxisType } = usePlotSettings();
-  const [checked, setChecked] = useState(xAxisType === "dsfo");
+  const [selected, setSelected] = useState<XAxisType>(xAxisType);
 
   useEffect(() => {
-    setChecked(xAxisType === "dsfo");
+    setSelected(xAxisType);
   }, [xAxisType]);
 
-  const handleChange = () => {
-    setChecked(!checked);
-    setXAxisType(checked ? "mjd" : "dsfo");
+  const handleChange = (
+    event: React.MouseEvent<HTMLElement>,
+    newSelection: XAxisType | null
+  ) => {
+    if (newSelection !== null) {
+      setSelected(newSelection);
+      setXAxisType(newSelection);
+    }
   };
 
   return (
-    <div className="flex items-center">
-      <span className={`mr-2 ${checked ? 'text-gray-400' : 'text-black'}`}>mjd</span>
-      <Switch
-        checked={checked}
-        onChange={handleChange}
-        inputProps={{ "aria-label": "controlled" }}
-        sx={{
-          '& .MuiSwitch-switchBase': {
-            '&.Mui-checked': {
-              '& + .MuiSwitch-track': {
-                backgroundColor: '#1976d2',
-              },
-            },
-          },
-          '& .MuiSwitch-track': {
-            backgroundColor: 'rgba(0, 0, 0, 0.26)',
-            opacity: 1,
-          },
-        }}
-      />
-      <span className={`ml-2 ${checked ? 'text-black' : 'text-gray-400'}`}>dsfo</span>
-    </div>
+    <ToggleButtonGroup
+      value={selected}
+      exclusive
+      onChange={handleChange}
+      aria-label="x-axis type"
+    >
+      <ToggleButton value="mjd" aria-label="mjd">
+        mjd
+      </ToggleButton>
+      <ToggleButton value="dsfo" aria-label="dsfo">
+        dsfo
+      </ToggleButton>
+      <ToggleButton value="peak" aria-label="peak">
+        peak
+      </ToggleButton>
+    </ToggleButtonGroup>
   );
 };
 

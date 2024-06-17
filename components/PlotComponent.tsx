@@ -39,7 +39,8 @@ const PlotComponent: React.FC = () => {
           const { data: lightCurves = [] } = await supabase
             .from("light_curves")
             .select("*")
-            .in("sn_id", selectedSNe.map(({ sn_id }) => sn_id));
+            .in("sn_id", selectedSNe.map(({ sn_id }) => sn_id))
+            .not("magnitude", "is", null);
 
           const lightCurvesDict = lightCurves?.reduce((acc, curve) => {
             if (!acc[curve.sn_id]) acc[curve.sn_id] = {};
@@ -62,20 +63,27 @@ const PlotComponent: React.FC = () => {
                     errorY: curve.magnitude_error || NaN
                   });
                 }
-            
-                if (xAxisType === "dsfo") {
-                  const minX = Math.min(...combinedData.map(data => data.x));
-                  combinedData = combinedData.map(data => ({ ...data, x: data.x - minX }));
-                }
-            
+
                 if (yAxisType === "absolute") {
                   combinedData = combinedData.map(data => ({
                     ...data,
                     y: sn.distance_modulus !== null ? data.y - sn.distance_modulus : data.y
                   }));
                 }
-            
+
                 combinedData.sort((a, b) => a.x - b.x);
+
+                if (xAxisType === "dsfo") {
+                  const minX = Math.min(...combinedData.map(data => data.x));
+                  combinedData = combinedData.map(data => ({ ...data, x: data.x - minX }));
+                }
+
+                if (xAxisType === "peak") { // find minimum magnitude for each filter and adjust all x values to be days +/- from peak
+                  const minMag = Math.min(...combinedData.map(data => data.y));
+                  const peakIndex = combinedData.findIndex(data => data.y === minMag);
+                  const peakMJD = combinedData[peakIndex].x;
+                  combinedData = combinedData.map(data => ({ ...data, x: data.x - peakMJD }));
+                }
             
                 let x = combinedData.map(data => data.x);
                 let y = combinedData.map(data => data.y);
@@ -189,7 +197,8 @@ const PlotComponent: React.FC = () => {
         data={plotData}
         layout={{
           xaxis: {
-            title: xAxisType === "dsfo" ? "Days since first observation" : "Modified Julian Date",
+            title: xAxisType === "dsfo" ? "Days since first observation" :
+              xAxisType === "peak" ? "Days from peak magnitude" : "Modified Julian Date",
             autorange: true,
           },
           yaxis: {
