@@ -1,7 +1,7 @@
-import React, { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { usePlotSettings } from "../../contexts/PlotSettingsContext";
 import { useSelectedSNe } from "../../contexts/SelectedSNeContext";
-import { ToggleButtonGroup, ToggleButton } from "@mui/material";
+import Switch from "@mui/material/Switch";
 
 interface YAxisToggleComponentProps {
   onNoData: (message: string) => void;
@@ -10,9 +10,18 @@ interface YAxisToggleComponentProps {
 const YAxisToggleComponent: React.FC<YAxisToggleComponentProps> = ({ onNoData }) => {
   const { yAxisType, setYAxisType } = usePlotSettings();
   const { selectedSNe, setSelectedSNe } = useSelectedSNe();
+  const [checked, setChecked] = useState(yAxisType === "absolute");
 
   useEffect(() => {
-    if (yAxisType === "absolute") {
+    setChecked(yAxisType === "absolute");
+  }, [yAxisType]);
+
+  const handleChange = () => {
+    const newChecked = !checked;
+    setChecked(newChecked);
+
+    if (newChecked) {
+      // Toggling from apparent to absolute
       const filteredSNe = selectedSNe.filter((sn) => sn.distance_modulus !== null);
       const removedSNe = selectedSNe.filter((sn) => sn.distance_modulus === null);
 
@@ -22,33 +31,36 @@ const YAxisToggleComponent: React.FC<YAxisToggleComponentProps> = ({ onNoData })
       }
 
       setSelectedSNe(filteredSNe);
-    }
-  }, [yAxisType, selectedSNe, setSelectedSNe, onNoData]);
-
-  const handleChange = (
-    event: React.MouseEvent<HTMLElement>,
-    newYAxisType: string | null
-  ) => {
-    if (newYAxisType !== null) {
-      setYAxisType(newYAxisType as "apparent" | "absolute");
+      setYAxisType("absolute");
+    } else {
+      // Toggling from absolute to apparent
+      setYAxisType("apparent");
     }
   };
 
   return (
-    <ToggleButtonGroup
-      value={yAxisType}
-      exclusive
-      onChange={handleChange}
-      aria-label="y-axis type"
-      size="small"
-    >
-      <ToggleButton value="apparent" aria-label="apparent">
-        Apparent
-      </ToggleButton>
-      <ToggleButton value="absolute" aria-label="absolute">
-        Absolute
-      </ToggleButton>
-    </ToggleButtonGroup>
+    <div className="flex items-center">
+      <span className={`mr-2 ${checked ? 'text-gray-400' : 'text-black'}`}>apparent</span>
+      <Switch
+        checked={checked}
+        onChange={handleChange}
+        inputProps={{ "aria-label": "controlled" }}
+        sx={{
+          '& .MuiSwitch-switchBase': {
+            '&.Mui-checked': {
+              '& + .MuiSwitch-track': {
+                backgroundColor: '#1976d2',
+              },
+            },
+          },
+          '& .MuiSwitch-track': {
+            backgroundColor: 'rgba(0, 0, 0, 0.26)',
+            opacity: 1,
+          },
+        }}
+      />
+      <span className={`ml-2 ${checked ? 'text-black' : 'text-gray-400'}`}>absolute</span>
+    </div>
   );
 }
 
