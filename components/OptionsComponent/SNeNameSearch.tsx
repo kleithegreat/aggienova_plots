@@ -16,6 +16,7 @@ const SNeNameSearch: React.FC<SNeNameSearchProps> = ({ onNoData }) => {
     const [searchTerm, setSearchTerm] = useState("");
     const [debouncedSearchTerm] = useDebounce(searchTerm, 200);
     const [availableSNe, setAvailableSNe] = useState<Supernova[]>([]);
+    const [selectedSN, setSelectedSN] = useState<Supernova | null>(null);
 
     useEffect(() => {
         const fetchSNNames = async () => {
@@ -56,6 +57,9 @@ const SNeNameSearch: React.FC<SNeNameSearchProps> = ({ onNoData }) => {
                 }
                 setSelectedSNe([...selectedSNe, value]);
             }
+
+            setSelectedSN(null);
+            setSearchTerm("");
         }
     };
 
@@ -74,6 +78,8 @@ const SNeNameSearch: React.FC<SNeNameSearchProps> = ({ onNoData }) => {
             onChange={handleAdd}
             noOptionsText="No supernovae found"
             clearOnBlur
+            value={selectedSN}
+            inputValue={searchTerm}
         />
     );
 };

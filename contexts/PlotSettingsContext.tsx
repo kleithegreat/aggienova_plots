@@ -17,6 +17,8 @@ interface PlotSettingsContextType {
   setFirstColor: React.Dispatch<React.SetStateAction<ColorOption>>;
   secondColor: ColorOption;
   setSecondColor: React.Dispatch<React.SetStateAction<ColorOption>>;
+  selectedFilters: ColorOption[];
+  setSelectedFilters: React.Dispatch<React.SetStateAction<ColorOption[]>>;
 }
 
 const PlotSettingsContext = createContext<PlotSettingsContextType | undefined>(undefined);
@@ -39,6 +41,7 @@ export const PlotSettingsProvider: React.FC<PlotSettingsProviderProps> = ({ chil
   const [plotType, setPlotType] = useState<PlotType>("magnitude");
   const [firstColor, setFirstColor] = useState<ColorOption>("B");
   const [secondColor, setSecondColor] = useState<ColorOption>("B");
+  const [selectedFilters, setSelectedFilters] = useState<ColorOption[]>(["B"]);
 
   return (
     <PlotSettingsContext.Provider
@@ -53,6 +56,8 @@ export const PlotSettingsProvider: React.FC<PlotSettingsProviderProps> = ({ chil
         setFirstColor,
         secondColor,
         setSecondColor,
+        selectedFilters,
+        setSelectedFilters,
       }}
     >
       {children}

@@ -22,7 +22,7 @@ interface PlotData {
 
 const PlotComponent: React.FC = () => {
   const { selectedSNe } = useSelectedSNe();
-  const { xAxisType, yAxisType, plotType, firstColor, secondColor } = usePlotSettings();
+  const { xAxisType, yAxisType, plotType, firstColor, secondColor, selectedFilters } = usePlotSettings();
   const [plotData, setPlotData] = useState<PlotData[]>([]);
 
   useEffect(() => {
@@ -52,6 +52,8 @@ const PlotComponent: React.FC = () => {
           if (plotType === "magnitude") {
             for (const sn of selectedSNe) {
               for (const [filterID, filterName] of Object.entries(filterTypeDict)) {
+                // Only process selected filters
+                if (!selectedFilters.includes(filterName as any)) continue;
                 if (!lightCurvesDict[sn.sn_id]?.[filterID]) continue;
 
                 let combinedData = [];
@@ -78,7 +80,7 @@ const PlotComponent: React.FC = () => {
                   combinedData = combinedData.map(data => ({ ...data, x: data.x - minX }));
                 }
 
-                if (xAxisType === "peak") { // find minimum magnitude for each filter and adjust all x values to be days +/- from peak
+                if (xAxisType === "peak") {
                   const minMag = Math.min(...combinedData.map(data => data.y));
                   const peakIndex = combinedData.findIndex(data => data.y === minMag);
                   const peakMJD = combinedData[peakIndex].x;
@@ -189,7 +191,7 @@ const PlotComponent: React.FC = () => {
       } catch (error) { console.error("Error fetching filters in PlotComponent: ", error); }
     };
     fetchData();
-  }, [selectedSNe, xAxisType, yAxisType, plotType, firstColor, secondColor]);
+  }, [selectedSNe, xAxisType, yAxisType, plotType, firstColor, secondColor, selectedFilters]);
 
   return (
     <Paper elevation={3} sx={{ padding: 2, display: 'flex', flexDirection: 'column', width: '100%', height: '100%' }}>
@@ -202,8 +204,10 @@ const PlotComponent: React.FC = () => {
             autorange: true,
           },
           yaxis: {
-            title: yAxisType === "absolute" ? "Absolute Magnitude" : "Apparent Magnitude",
-            autorange: "reversed"
+            title: plotType === "magnitude" 
+              ? (yAxisType === "absolute" ? "Absolute Magnitude" : "Apparent Magnitude")
+              : `${firstColor} - ${secondColor}`,
+            autorange: plotType === "magnitude" ? "reversed" : true
           },
           autosize: true,
           margin: { l: 50, r: 50, b: 50, t: 50, pad: 5 },
@@ -211,10 +215,7 @@ const PlotComponent: React.FC = () => {
         config={{
           responsive: true,
           displayModeBar: true,
-          modeBarButtonsToRemove: ['toImage', 'sendDataToCloud', 'hoverCompareCartesian', 'hoverClosestCartesian', 'zoom2d', 'pan2d', 'select2d', 'lasso2d', 'zoomIn2d', 'zoomOut2d', 'autoScale2d'],
-          modeBarButtonsToAdd: [
-            // Add custom buttons as necessary
-          ],
+          modeBarButtonsToRemove: ['sendDataToCloud', 'hoverCompareCartesian', 'hoverClosestCartesian', 'zoom2d', 'pan2d', 'select2d', 'lasso2d', 'zoomIn2d', 'zoomOut2d', 'autoScale2d'],
         }}
         style={{ width: '100%', flexGrow: 1 }}
       />

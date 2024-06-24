@@ -16,6 +16,7 @@ const TypeSearch: React.FC<TypeSearchProps> = ({ onNoData }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [debouncedSearchTerm] = useDebounce(searchTerm, 200);
     const [availableTypes, setAvailableTypes] = useState<SnType[]>([]);
+    const [selectedType, setSelectedType] = useState<SnType | null>(null);
 
     useEffect(() => {
         const fetchTypes = async () => {
@@ -76,6 +77,9 @@ const TypeSearch: React.FC<TypeSearchProps> = ({ onNoData }) => {
                 const validSupernovae = filteredSupernovae.filter((sn) => sn !== null) as Supernova[];
                 setSelectedSNe([...selectedSNe, ...validSupernovae]);
             }
+
+            setSelectedType(null);
+            setSearchTerm('');
         }
     };
 
@@ -90,6 +94,8 @@ const TypeSearch: React.FC<TypeSearchProps> = ({ onNoData }) => {
             onChange={handleSearch}
             noOptionsText="No types found"
             clearOnBlur
+            value={selectedType}
+            inputValue={searchTerm}
         />
     );
 };
